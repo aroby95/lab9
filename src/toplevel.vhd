@@ -43,7 +43,13 @@ entity design_1_wrapper is
     mclk : out STD_LOGIC;
     sdata : out STD_LOGIC;
     sw : in std_logic_vector(3 downto 0); 
-    leds : out std_logic_vector(3 downto 0)
+    leds : out std_logic_vector(3 downto 0);
+    led5_r : out std_logic;
+    led5_g : out std_logic;
+    led5_b : out std_logic;
+    led6_r : out std_logic;
+    led6_g : out std_logic;
+    led6_b : out std_logic
   );
 end design_1_wrapper;
 
@@ -71,19 +77,20 @@ architecture STRUCTURE of design_1_wrapper is
     FIXED_IO_ps_srstb : inout STD_LOGIC;
     FIXED_IO_ps_clk : inout STD_LOGIC;
     FIXED_IO_ps_porb : inout STD_LOGIC;
-    IIC_0_scl_i : in STD_LOGIC;
-    IIC_0_scl_o : out STD_LOGIC;
-    IIC_0_scl_t : out STD_LOGIC;
     IIC_0_sda_i : in STD_LOGIC;
     IIC_0_sda_o : out STD_LOGIC;
     IIC_0_sda_t : out STD_LOGIC;
+    IIC_0_scl_i : in STD_LOGIC;
+    IIC_0_scl_o : out STD_LOGIC;
+    IIC_0_scl_t : out STD_LOGIC;
+    LEDS_GPIO_tri_o : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    DIPS_GPIO_tri_i : in STD_LOGIC_VECTOR ( 3 downto 0 );
     bclk : out STD_LOGIC;
     clk125 : in STD_LOGIC;
     lrck : out STD_LOGIC;
     mclk : out STD_LOGIC;
     sdata : out STD_LOGIC;
-    leds_gpio_tri_o : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    dips_gpio_tri_i : in STD_LOGIC_VECTOR ( 3 downto 0 )
+    rgb_leds_en_tri_o : out STD_LOGIC_VECTOR ( 5 downto 0 )
   );
   end component design_1;
   component IOBUF is
@@ -100,6 +107,7 @@ architecture STRUCTURE of design_1_wrapper is
   signal IIC_0_sda_i : STD_LOGIC;
   signal IIC_0_sda_o : STD_LOGIC;
   signal IIC_0_sda_t : STD_LOGIC;
+  signal rgb_leds    : STD_LOGIC_VECTOR(5 downto 0);
 begin
 IIC_0_scl_iobuf: component IOBUF
      port map (
@@ -150,8 +158,15 @@ design_1_i: component design_1
       sdata => sdata,
       clk125=>clk125,
       dips_gpio_tri_i => sw,
-      leds_gpio_tri_o => leds
+      leds_gpio_tri_o => leds,
+      rgb_leds_en_tri_o => rgb_leds
     );
     
-ac_muten <= '1';    
+    led5_r <= rgb_leds(0);
+    led5_g <= rgb_leds(1);
+    led5_b <= rgb_leds(2);
+    led6_r <= rgb_leds(3);
+    led6_g <= rgb_leds(4);
+    led6_b <= rgb_leds(5);
+    ac_muten <= '1';    
 end STRUCTURE;
